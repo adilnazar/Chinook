@@ -5,6 +5,10 @@ using System.Reflection;
 using Chinook.Areas.Identity;
 using Chinook.Infrastructure.Extension;
 using Chinook.Models;
+using Chinook.Infrastructure.Contracts.Repositories;
+using Chinook.DataAccess;
+using Chinook.Infrastructure.Contracts.Services;
+using Chinook.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,7 +24,21 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ChinookUser>>();
-builder.Services.AddServiceImplementations(Assembly.GetExecutingAssembly());
+
+// To register all the services and repositories by type
+//builder.Services.AddServiceImplementations(Assembly.GetExecutingAssembly());
+
+//Repositories
+builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
+builder.Services.AddScoped<IPlaylistRepository, PlaylistRepository>();
+builder.Services.AddScoped<ITrackRepository, TrackRepository>();
+
+//Services
+builder.Services.AddScoped<IArtistService, ArtistService>();
+builder.Services.AddScoped<IPlaylistService, PlaylistService>();
+builder.Services.AddScoped<ITrackService, TrackService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
