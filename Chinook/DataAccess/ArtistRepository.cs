@@ -53,8 +53,16 @@ namespace Chinook.DataAccess
         /// <returns></returns>
         public async Task<ArtistModel> GetArtistByIdAsync(long ArtistId)
         {
-            var artist = await DbContext.Artists.SingleOrDefaultAsync(a => a.ArtistId == ArtistId);
-            return Mapper.Map<ArtistModel>(artist);
+            try
+            {
+                var artist = await DbContext.Artists.SingleOrDefaultAsync(a => a.ArtistId == ArtistId);
+                return Mapper.Map<ArtistModel>(artist);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
     }

@@ -2,6 +2,7 @@
 @attribute [Authorize]
 
 @using Chinook.ClientModels
+@using Chinook.ClientServices.Interfaces
 @using Chinook.Infrastructure.Contracts.Services;
 
 @if (!string.IsNullOrWhiteSpace(InfoMessage))
@@ -96,7 +97,7 @@ else
     [Inject] IUserService UserService { get; set; }
     [Inject] ITrackService DataService { get; set; }
     [Inject] IPlaylistService PlaylistService { get; set; }
-    [Inject] IArtistService ArtistService { get; set; }
+    [Inject] IClientArtistService ArtistService { get; set; }
    
     private Modal PlaylistDialog { get; set; }
 

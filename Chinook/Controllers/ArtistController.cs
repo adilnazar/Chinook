@@ -34,4 +34,19 @@ public class ArtistController : ControllerBase
             return StatusCode(500, new { message = "An error occurred while processing your request.", detail = ex.Message });
         }
     }
+
+    [HttpGet("{artistId}")]
+    public async Task<ActionResult<ArtistModel>> GetArtistById(long artistId)
+    {
+        try
+        {
+            var artist = await ArtistService.GetArtistByIdAsync(artistId);
+            return Ok(artist);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "An unexpected error occurred while getting artist by Id.");
+            return StatusCode(500, new { message = "An error occurred while processing your request.", detail = ex.Message });
+        }
+    }
 }

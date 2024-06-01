@@ -37,5 +37,25 @@ namespace Chinook.ClientServices
                 return new List<ArtistModel>();
             }
         }
+
+        public async Task<ArtistModel> GetArtistByIdAsync(long artistId)
+        {
+            try
+            {
+                var response = await HttpClient.GetAsync($"api/artist/{artistId}");
+                response.EnsureSuccessStatusCode();
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Logger.LogInformation("Response Content: {0}", responseContent);
+
+                var artists = JsonSerializer.Deserialize<ArtistModel>(responseContent);
+                return artists ?? new ArtistModel();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Request error.");
+                return new ArtistModel();
+            }
+        }
     }
 }
