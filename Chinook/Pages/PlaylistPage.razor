@@ -1,6 +1,8 @@
 ﻿@page "/playlist/{PlaylistId:long}"
 @attribute [Authorize]
+@inject NavigationManager Navigation
 
+@using Chinook.Infrastructure.Contracts.Services
 @using Chinook.Models
 @using Microsoft.EntityFrameworkCore
 @using System.Security.Claims;
@@ -39,7 +41,7 @@ else
                     <td>@track.ArtistName - @track.AlbumTitle - @track.TrackName</td>
                     <td>
                         <div class="d-flex">
-                            @if (Playlist.Name != "Favorite")
+                            @if (Playlist.Name != "My favorite tracks")
                             {
                                 @if (track.IsFavorite)
                                 {
@@ -62,68 +64,78 @@ else
 
 @code {
     [Parameter] public long PlaylistId { get; set; }
-    [Inject] IDbContextFactory<ChinookContext> DbFactory { get; set; }
-    [CascadingParameter] private Task<AuthenticationState> authenticationState { get; set; }
+    [Inject] ITrackService DataService { get; set; }
+    [Inject] IPlaylistService PlaylistService { get; set; }
+
 
     private Chinook.ClientModels.Playlist Playlist;
-    private string CurrentUserId;
     private string InfoMessage;
 
     protected override async Task OnInitializedAsync()
     {
-        CurrentUserId = await GetUserId();
-
         await InvokeAsync(StateHasChanged);
-        var DbContext = await DbFactory.CreateDbContextAsync();
-
-        Playlist = DbContext.Playlists
-            .Include(a => a.Tracks).ThenInclude(a => a.Album).ThenInclude(a => a.Artist)
-            .Where(p => p.PlaylistId == PlaylistId)
-            .Select(p => new ClientModels.Playlist()
-                {
-                    Name = p.Name,
-                    Tracks = p.Tracks.Select(t => new ClientModels.PlaylistTrack()
-                    {
-                        AlbumTitle = t.Album.Title,
-                        ArtistName = t.Album.Artist.Name,
-                        TrackId = t.TrackId,
-                        TrackName = t.Name,
-                        IsFavorite = t.Playlists.Where(p => p.UserPlaylists.Any(up => up.UserId == CurrentUserId && up.Playlist.Name == "Favorites")).Any()
-                    }).ToList()
-                })
-            .FirstOrDefault();
+        await GetPlaylist();
     }
 
-    private async Task<string> GetUserId()
+    protected override async Task OnParametersSetAsync()
     {
-        var user = (await authenticationState).User;
-        var userId = user.FindFirst(u => u.Type.Contains(ClaimTypes.NameIdentifier))?.Value;
-        return userId;
-    }
-
-    private void FavoriteTrack(long trackId)
-    {
-        var track = Playlist.Tracks.FirstOrDefault(t => t.TrackId == trackId);
-
-        // TODO: add track to Favorites playlist
-
-        InfoMessage = $"Track {track.ArtistName} - {track.AlbumTitle} - {track.TrackName} added to playlist Favorites.";
-    }
-
-    private void UnfavoriteTrack(long trackId)
-    {
-        var track = Playlist.Tracks.FirstOrDefault(t => t.TrackId == trackId);
-
-        // TODO: remove track from Favorites playlist
-
-        InfoMessage = $"Track {track.ArtistName} - {track.AlbumTitle} - {track.TrackName} removed from playlist Favorites.";
-    }
-
-    private void RemoveTrack(long trackId)
-    {
-        // TODO
-        s
+        await InvokeAsync(StateHasChanged);
         CloseInfoMessage();
+        await GetPlaylist();
+    }
+
+    private async Task FavoriteTrack(long trackId)
+    {
+        var track = Playlist.Tracks.FirstOrDefault(t => t.TrackId == trackId);
+
+        var result = await DataService.FavoriteTrack(trackId);
+
+        if (result)
+        {
+            InfoMessage = $"Track {track.ArtistName} - {track.AlbumTitle} - {track.TrackName} added to playlist My favorite tracks.";
+            await GetPlaylist();
+        }
+        else
+        {
+            InfoMessage = $"Failed to add to playlist My favorite tracks.";
+        }
+
+    }
+
+    private async Task UnfavoriteTrack(long trackId)
+    {
+        var track = Playlist.Tracks.FirstOrDefault(t => t.TrackId == trackId);
+
+        var result = await DataService.UnFavoriteTrack(trackId);
+
+        if (result)
+        {
+            InfoMessage = $"Track {track.ArtistName} - {track.AlbumTitle} - {track.TrackName} removed from playlist My favorite tracks.";
+            await GetPlaylist();
+        }
+        else
+        {
+            InfoMessage = $"Failed to remove from playlist My favorite tracks.";
+        }
+    }
+
+    private async Task RemoveTrack(long trackId)
+    {
+        CloseInfoMessage();
+        var track = Playlist.Tracks.FirstOrDefault(t => t.TrackId == trackId);
+        var result = await DataService.RemoveTrackFromPlaylist(trackId, PlaylistId);
+        if (result)
+        {
+            InfoMessage = $"Track {track.ArtistName} - {track.AlbumTitle} - {track.TrackName} removed from playlist {Playlist.Name}";
+            await GetPlaylist();
+        }
+
+    }
+
+    private async Task GetPlaylist()
+    {
+        Playlist = await PlaylistService.GetPlayListByIdWithTracks(PlaylistId);
+        StateHasChanged();
     }
 
     private void CloseInfoMessage()

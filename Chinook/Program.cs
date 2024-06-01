@@ -1,8 +1,11 @@
 using Chinook;
-using Chinook.Areas.Identity;
-using Chinook.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using Chinook.Areas.Identity;
+using Chinook.Infrastructure.Extension;
+using Chinook.Models;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +20,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<ChinookUser>>();
+builder.Services.AddServiceImplementations(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 
