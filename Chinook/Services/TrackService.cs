@@ -1,8 +1,5 @@
 ﻿using Chinook.Infrastructure.Contracts.Repositories;
 using Chinook.Infrastructure.Contracts.Services;
-using Chinook.Models;
-using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol.Core.Types;
 
 namespace Chinook.Services
 {

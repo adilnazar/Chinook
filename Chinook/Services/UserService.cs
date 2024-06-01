@@ -1,6 +1,8 @@
-﻿using Chinook.Infrastructure.Contracts.Services;
-using Microsoft.AspNetCore.Components.Authorization;
+﻿using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
+
+using Chinook.Infrastructure.Contracts.Services;
+
 
 namespace Chinook.Services
 {

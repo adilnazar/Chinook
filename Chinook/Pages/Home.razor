@@ -1,9 +1,8 @@
 ﻿@page "/"
 @attribute [Authorize]
 
+@using Chinook.ClientModels
 @using Chinook.Infrastructure.Contracts.Services
-@using Chinook.Models
-@using Microsoft.EntityFrameworkCore
 
 <PageTitle>Index</PageTitle>
 
@@ -34,7 +33,7 @@ else
             {
                 <tr>
                     <td><a href="Artist/@artist.ArtistId">@artist.Name</a></td>
-                    <td>@artist.Albums.Count()</td>
+                    <td>@artist.AlbumCount</td>
                 </tr>
             }
         </tbody>
@@ -42,7 +41,7 @@ else
 }
 
 @code {
-    private List<Artist> Artists;
+    private List<ArtistModel> Artists;
     private string ArtistSearchString = string.Empty;
     [Inject] IArtistService ArtistService { get; set; }
 

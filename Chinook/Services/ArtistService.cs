@@ -1,7 +1,6 @@
-﻿using Chinook.Infrastructure.Contracts.Repositories;
+﻿using Chinook.ClientModels;
+using Chinook.Infrastructure.Contracts.Repositories;
 using Chinook.Infrastructure.Contracts.Services;
-using Chinook.Models;
-using NuGet.Protocol.Core.Types;
 
 namespace Chinook.Services
 {
@@ -23,7 +22,7 @@ namespace Chinook.Services
         /// </summary>
         /// <param name="artistSearchString"></param>
         /// <returns></returns>
-        public async Task<List<Artist>> GetArtistsAsync(string artistSearchString)
+        public async Task<List<ArtistModel>> GetArtistsAsync(string artistSearchString)
         {
             return await ArtistRepository.GetArtistsAsync(artistSearchString);
         }
@@ -33,6 +32,6 @@ namespace Chinook.Services
         /// </summary>
         /// <param name="ArtistId"></param>
         /// <returns></returns>
-        public async Task<Artist> GetArtistByIdAsync(long artistId) => await ArtistRepository.GetArtistByIdAsync(artistId);
+        public async Task<ArtistModel> GetArtistByIdAsync(long artistId) => await ArtistRepository.GetArtistByIdAsync(artistId);
     }
 }

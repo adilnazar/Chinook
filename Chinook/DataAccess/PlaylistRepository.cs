@@ -1,7 +1,8 @@
-﻿using Chinook.Common.Constants;
+﻿using Microsoft.EntityFrameworkCore;
+
+using Chinook.Common.Constants;
 using Chinook.Infrastructure.Contracts.Repositories;
-using Chinook.Models;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace Chinook.DataAccess
 {
