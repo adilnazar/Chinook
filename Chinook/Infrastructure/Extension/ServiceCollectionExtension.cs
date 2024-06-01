@@ -1,5 +1,7 @@
-﻿using Chinook.Infrastructure.Contracts;
-using System.Reflection;
+﻿using System.Reflection;
+
+using Chinook.Infrastructure.Contracts;
+
 
 namespace Chinook.Infrastructure.Extension
 {

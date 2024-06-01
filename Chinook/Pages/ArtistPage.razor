@@ -1,12 +1,7 @@
 ﻿@page "/artist/{ArtistId:long}"
 @attribute [Authorize]
 
-@using Chinook.Infrastructure.Contracts
-@using Chinook.Models
 @using Chinook.ClientModels
-@using Chinook.Services
-@using Microsoft.EntityFrameworkCore
-@using System.Security.Claims;
 @using Chinook.Infrastructure.Contracts.Services;
 
 @if (!string.IsNullOrWhiteSpace(InfoMessage))
@@ -105,7 +100,7 @@ else
    
     private Modal PlaylistDialog { get; set; }
 
-    private Artist Artist;
+    private ArtistModel Artist;
     private List<PlaylistTrack> Tracks;
     private PlaylistTrack SelectedTrack;
     private string InfoMessage;

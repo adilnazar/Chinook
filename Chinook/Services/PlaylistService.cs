@@ -1,8 +1,5 @@
-﻿using Chinook.DataAccess;
-using Chinook.Infrastructure.Contracts.Repositories;
+﻿using Chinook.Infrastructure.Contracts.Repositories;
 using Chinook.Infrastructure.Contracts.Services;
-using Chinook.Models;
-using NuGet.Protocol.Core.Types;
 
 namespace Chinook.Services
 {

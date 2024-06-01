@@ -1,4 +1,5 @@
-﻿using Chinook.Models;
+﻿using Chinook.ClientModels;
+using Chinook.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chinook.Infrastructure.Contracts.Repositories
@@ -10,13 +11,13 @@ namespace Chinook.Infrastructure.Contracts.Repositories
         /// </summary>
         /// <param name="artistSearchString"></param>
         /// <returns></returns>
-        Task<List<Artist>> GetArtistsAsync(string artistSearchString);
+        Task<List<ArtistModel>> GetArtistsAsync(string artistSearchString);
 
         /// <summary>
         /// Get Artist Details by Id
         /// </summary>
         /// <param name="ArtistId"></param>
         /// <returns></returns>
-        Task<Artist> GetArtistByIdAsync(long ArtistId);
+        Task<ArtistModel> GetArtistByIdAsync(long ArtistId);
     }
 }
