@@ -41,6 +41,8 @@ builder.Services.AddScoped<IPlaylistService, PlaylistService>();
 builder.Services.AddScoped<ITrackService, TrackService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
+builder.Services.AddScoped<IAppState,AppState>();
+
 builder.Services.AddScoped<IClientArtistService, ClientArtistService>();
 builder.Services.AddHttpClient<ClientArtistService>(client =>
 {
