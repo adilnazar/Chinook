@@ -47,7 +47,6 @@ else
     [Inject] IClientArtistService ArtistService { get; set; }
 
     protected override async Task OnInitializedAsync() {
-        await InvokeAsync(StateHasChanged);
         Artists = await ArtistService.GetArtistsAsync(ArtistSearchString);
     }
 

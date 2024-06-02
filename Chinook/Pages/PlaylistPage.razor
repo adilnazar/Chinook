@@ -2,28 +2,30 @@
 @attribute [Authorize]
 @inject NavigationManager Navigation
 
+@using Chinook.ClientServices.Interfaces
 @using Chinook.Infrastructure.Contracts.Services
 
-<h1>Playlist <strong>@Playlist.Name</strong></h1>
 
-@if (!string.IsNullOrWhiteSpace(InfoMessage))
-{
-    <div class="alert alert-info fade show">
-        <div class="d-flex align-items-start">
-            <div class="flex-grow-1">
-                @InfoMessage
-            </div>
-            <button type="button" class="btn-close" aria-label="Close" @onclick="CloseInfoMessage"></button>
-        </div>
-    </div>
-}
-
-@if (Playlist == null)
+@if (IsLoading)
 {
      <Loading />
 }
 else
 {
+    <h1>Playlist <strong>@Playlist.Name</strong></h1>
+
+    @if (!string.IsNullOrWhiteSpace(InfoMessage))
+    {
+        <div class="alert alert-info fade show">
+            <div class="d-flex align-items-start">
+                <div class="flex-grow-1">
+                    @InfoMessage
+                </div>
+                <button type="button" class="btn-close" aria-label="Close" @onclick="CloseInfoMessage"></button>
+            </div>
+        </div>
+    }
+
     <table class="table table-striped table-hover table-sm">
         <thead>
             <tr>
@@ -62,23 +64,22 @@ else
 @code {
     [Parameter] public long PlaylistId { get; set; }
     [Inject] ITrackService DataService { get; set; }
-    [Inject] IPlaylistService PlaylistService { get; set; }
+    [Inject] IClientPlaylistService PlaylistService { get; set; }
 
 
     private Chinook.ClientModels.Playlist Playlist;
     private string InfoMessage;
+    private bool IsLoading = true; // Loading state
 
     protected override async Task OnInitializedAsync()
     {
-        await InvokeAsync(StateHasChanged);
-        await GetPlaylist();
+        await LoadPlaylistOnInitialize();
     }
 
     protected override async Task OnParametersSetAsync()
-    {
-        await InvokeAsync(StateHasChanged);
+    {    
+        await LoadPlaylistOnInitialize();
         CloseInfoMessage();
-        await GetPlaylist();
     }
 
     private async Task FavoriteTrack(long trackId)
@@ -90,7 +91,7 @@ else
         if (result)
         {
             InfoMessage = $"Track {track.ArtistName} - {track.AlbumTitle} - {track.TrackName} added to playlist My favorite tracks.";
-            await GetPlaylist();
+            await ReloadPlaylist();
         }
         else
         {
@@ -108,7 +109,7 @@ else
         if (result)
         {
             InfoMessage = $"Track {track.ArtistName} - {track.AlbumTitle} - {track.TrackName} removed from playlist My favorite tracks.";
-            await GetPlaylist();
+            await ReloadPlaylist();
         }
         else
         {
@@ -124,15 +125,24 @@ else
         if (result)
         {
             InfoMessage = $"Track {track.ArtistName} - {track.AlbumTitle} - {track.TrackName} removed from playlist {Playlist.Name}";
-            await GetPlaylist();
+            await ReloadPlaylist();
         }
 
     }
 
-    private async Task GetPlaylist()
+    private async Task ReloadPlaylist()
     {
-        Playlist = await PlaylistService.GetPlayListByIdWithTracks(PlaylistId);
+        IsLoading = true; // Set loading state to true
+        Playlist = await PlaylistService.GetPlaylistByIdAsync(PlaylistId);
+        IsLoading = false; // Set loading state to false after data is fetched
         StateHasChanged();
+    }
+
+    private async Task LoadPlaylistOnInitialize()
+    {
+        IsLoading = true; // Set loading state to true
+        Playlist = await PlaylistService.GetPlaylistByIdAsync(PlaylistId);
+        IsLoading = false; // Set loading state to false after data is fetched
     }
 
     private void CloseInfoMessage()
