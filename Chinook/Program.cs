@@ -48,7 +48,7 @@ builder.Services.AddScoped<IApiServices, ApiServices>();
 builder.Services.AddScoped<IClientPlaylistService, ClientPlaylistService>();
 builder.Services.AddScoped<IClientArtistService, ClientArtistService>();
 builder.Services.AddScoped<IClientTrackService, ClientTrackService>();
-builder.Services.AddHttpClient<ClientArtistService>(client =>
+builder.Services.AddHttpClient<ApiServices>(client =>
 {
     
 });
