@@ -1,7 +1,6 @@
 ﻿using Chinook.ClientModels;
 using Chinook.ClientServices.API;
 using Chinook.ClientServices.Interfaces;
-using Chinook.Infrastructure.Contracts.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace Chinook.ClientServices

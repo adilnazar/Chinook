@@ -1,4 +1,6 @@
-﻿namespace Chinook.Infrastructure.Contracts.Services
+﻿using Chinook.Infrastructure.Contracts;
+
+namespace Chinook.ClientServices.Interfaces
 {
     public interface IUserService : IBase
     {
