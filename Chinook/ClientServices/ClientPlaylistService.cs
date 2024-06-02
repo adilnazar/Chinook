@@ -2,6 +2,7 @@
 using Chinook.ClientServices.API;
 using Chinook.ClientServices.Interfaces;
 using Chinook.Infrastructure.Contracts.Services;
+using Microsoft.AspNetCore.Components;
 
 namespace Chinook.ClientServices
 {
@@ -9,11 +10,13 @@ namespace Chinook.ClientServices
     {
         private readonly IApiServices ApiServices;
         private readonly IUserService UserService;
+        private readonly NavigationManager NavigationManager;
 
-        public ClientPlaylistService(IApiServices apiServices, IUserService userService)
+        public ClientPlaylistService(IApiServices apiServices, IUserService userService, NavigationManager navigationManager)
         {
             ApiServices = apiServices;
             UserService = userService;
+            NavigationManager = navigationManager;
 
         }
 
@@ -25,6 +28,10 @@ namespace Chinook.ClientServices
         public async Task<List<Playlist>> GetPlaylistsAsync()
         {
             var userId = await UserService.GetUserId();
+            if (userId == null ) {
+                NavigationManager.NavigateTo("/Identity/Account/Login");
+                return new List<Playlist>();
+            }
             return await ApiServices.GetDataAsync<List<Playlist>>($"api/playlist/{userId}");
         }
 
