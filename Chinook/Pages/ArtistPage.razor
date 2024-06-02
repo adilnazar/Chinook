@@ -77,6 +77,9 @@ else
                         <option value="@playlist.PlaylistId">@playlist.Name</option>
                     }
                 }
+              @*   <option>Playlist 1</option>
+                <option>Playlist 2</option>
+                <option>Playlist 3</option> *@
             </select>
         </div>
         <div class="mb-2">
@@ -92,7 +95,8 @@ else
 @code {
     [Parameter] public long ArtistId { get; set; }
 
-    [Inject] IClientTrackService TrackService { get; set; }
+    [Inject] IUserService UserService { get; set; }
+    [Inject] ITrackService DataService { get; set; }
     [Inject] IClientPlaylistService PlaylistService { get; set; }
     [Inject] IClientArtistService ArtistService { get; set; }
     [Inject] IAppState AppState { get; set; }
@@ -110,19 +114,19 @@ else
     protected override async Task OnInitializedAsync()
     {
         Artist = await ArtistService.GetArtistByIdAsync(ArtistId);
-        Tracks = await TrackService.GetTracksByArtist(ArtistId);
+        Tracks = await DataService.GetTracksByArtist(ArtistId);
     }
 
     private async Task FavoriteTrack(long trackId)
     {
         var track = Tracks.FirstOrDefault(t => t.TrackId == trackId);
 
-        var result = await TrackService.FavoriteTrack(trackId);
+        var result = await DataService.FavoriteTrack(trackId);
 
         if (result)
         {
             InfoMessage = $"Track {track.ArtistName} - {track.AlbumTitle} - {track.TrackName} added to playlist My favorite tracks.";
-            Tracks = await TrackService.GetTracksByArtist(ArtistId);
+            Tracks = await DataService.GetTracksByArtist(ArtistId);
             StateHasChanged();
         }
         else
@@ -135,12 +139,12 @@ else
     {
         var track = Tracks.FirstOrDefault(t => t.TrackId == trackId);
 
-        var result = await TrackService.UnFavoriteTrack(trackId);
+        var result = await DataService.UnFavoriteTrack(trackId);
 
         if (result)
         {
             InfoMessage = $"Track {track.ArtistName} - {track.AlbumTitle} - {track.TrackName} removed from playlist My favorite tracks.";
-            Tracks = await TrackService.GetTracksByArtist(ArtistId);
+            Tracks = await DataService.GetTracksByArtist(ArtistId);
             StateHasChanged();
         }
         else
@@ -159,14 +163,14 @@ else
         PlaylistDialog.Open();
     }
 
-    private async Task AddTrackToPlaylist()
+    private async void AddTrackToPlaylist()
     {
         CloseInfoMessage();
         var message = "";
         if (!string.IsNullOrEmpty(NewPlaylistName))
         {
-            var result = await TrackService.AddTrackToPlaylist(SelectedTrack.TrackId, null, NewPlaylistName);
-            if (!string.IsNullOrEmpty(result))
+            var result = await DataService.AddTrackToPlaylist(SelectedTrack.TrackId, null, NewPlaylistName);
+            if (result != "")
             {
                 message = result;
             }
@@ -179,7 +183,7 @@ else
         }
         else if (SelectedExistingPlaylist != null)
         {
-            var result = await TrackService.AddTrackToPlaylist(SelectedTrack.TrackId, SelectedExistingPlaylist, null);
+            var result = await DataService.AddTrackToPlaylist(SelectedTrack.TrackId, SelectedExistingPlaylist, null);
             if (result != "")
             {
                 message = result;
