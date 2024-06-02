@@ -1,4 +1,5 @@
-﻿using Chinook.Infrastructure.Contracts.Repositories;
+﻿using Chinook.ClientModels.Request;
+using Chinook.Infrastructure.Contracts.Repositories;
 using Chinook.Infrastructure.Contracts.Services;
 
 namespace Chinook.Services
@@ -6,17 +7,15 @@ namespace Chinook.Services
     public class TrackService : ITrackService
     {
         private readonly ITrackRepository TrackRepository;
-        private readonly IUserService UserService;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="repository"></param>
         /// <param name="userService"></param>
-        public TrackService(ITrackRepository repository,IUserService userService) 
+        public TrackService(ITrackRepository repository) 
         {
             TrackRepository = repository;
-            UserService = userService;
         }
 
         /// <summary>
@@ -24,10 +23,9 @@ namespace Chinook.Services
         /// </summary>
         /// <param name="artistId"></param>
         /// <returns></returns>
-        public async Task<List<ClientModels.PlaylistTrack>> GetTracksByArtist(long artistId)
+        public async Task<List<ClientModels.PlaylistTrack>> GetTracksByArtist(CommonRequestModel requestModel)
         {
-            var userId = await UserService.GetUserId();
-            var result = await TrackRepository.GetTracksByArtist(artistId,userId);
+            var result = await TrackRepository.GetTracksByArtist(requestModel.Id, requestModel.UserId);
             return result;
         }
 
@@ -36,10 +34,9 @@ namespace Chinook.Services
         /// </summary>
         /// <param name="trackId"></param>
         /// <returns></returns>
-        public async Task<bool> FavoriteTrack(long trackId)
+        public async Task<bool> FavoriteTrack(CommonRequestModel requestModel)
         {
-            var userId = await UserService.GetUserId();
-            var result = await TrackRepository.AddTrackToFavorite(trackId, userId);
+            var result = await TrackRepository.AddTrackToFavorite(requestModel.Id, requestModel.UserId);
             return result;
         }
 
@@ -48,10 +45,9 @@ namespace Chinook.Services
         /// </summary>
         /// <param name="trackId"></param>
         /// <returns></returns>
-        public async Task<bool> UnFavoriteTrack(long trackId)
+        public async Task<bool> UnFavoriteTrack(CommonRequestModel requestModel)
         {
-            var userId = await UserService.GetUserId();
-            var result = await TrackRepository.RemoveTrackFromFavorite(trackId, userId);
+            var result = await TrackRepository.RemoveTrackFromFavorite(requestModel.Id, requestModel.UserId);
             return result;
         }
 
@@ -62,10 +58,9 @@ namespace Chinook.Services
         /// <param name="playlistId"></param>
         /// <param name="newPlaylistName"></param>
         /// <returns></returns>
-        public async Task<string> AddTrackToPlaylist(long trackId, long? playlistId, string? newPlaylistName)
+        public async Task<string> AddTrackToPlaylist(AddTrackToPlaylistModel requestModel)
         {
-            var userId = await UserService.GetUserId();
-            var result = await TrackRepository.AddTrackToPlaylist(trackId, playlistId, newPlaylistName,userId);
+            var result = await TrackRepository.AddTrackToPlaylist(requestModel.TrackId, requestModel.PlaylistId, requestModel.NewPlaylistName, requestModel.UserId);
 
             return result;
         }
@@ -76,9 +71,9 @@ namespace Chinook.Services
         /// <param name="trackId"></param>
         /// <param name="playlistId"></param>
         /// <returns></returns>
-        public async Task<bool> RemoveTrackFromPlaylist(long trackId, long playlistId)
+        public async Task<bool> RemoveTrackFromPlaylist(RemoveTrackFromPlaylistModel requestModel)
         {
-            var result = await TrackRepository.RemoveTrackFromPlaylist(trackId, playlistId);
+            var result = await TrackRepository.RemoveTrackFromPlaylist(requestModel.TrackId, requestModel.PlaylistId);
             return result;
         }
     }
