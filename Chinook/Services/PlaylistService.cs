@@ -6,28 +6,33 @@ namespace Chinook.Services
     public class PlaylistService : IPlaylistService
     {
         private readonly IPlaylistRepository PlaylistRepository;
-        private readonly IUserService UserService;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="repository"></param>
-        public PlaylistService(IPlaylistRepository repository, IUserService userService)
+        public PlaylistService(IPlaylistRepository repository)
         {
             PlaylistRepository = repository;
-            UserService = userService;
         }
 
         /// <summary>
         /// Retrieves a list of playlists for a given user.
         /// </summary>
         /// <returns></returns>
-        public async Task<List<ClientModels.Playlist>> GetUserPlayLists()
+        public async Task<List<ClientModels.Playlist>> GetUserPlayLists(string userId)
         {
-            var userId = await UserService.GetUserId();
-            var playlists = await PlaylistRepository.GetUserPlayLists(userId);
+            try
+            {
+                var playlists = await PlaylistRepository.GetUserPlayLists(userId);
 
-            return playlists;
+                return playlists;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
 
         }
 
@@ -36,12 +41,19 @@ namespace Chinook.Services
         /// </summary>
         /// <param name="playlistId"></param>
         /// <returns></returns>
-        public async Task<ClientModels.Playlist> GetPlayListByIdWithTracks(long playlistId)
+        public async Task<ClientModels.Playlist> GetPlayListByIdWithTracks(string userId,long playlistId)
         {
-            var userId = await UserService.GetUserId();
-            var playlistWithTracks = await PlaylistRepository.GetPlayListByIdWithTracks(playlistId, userId);
+            try
+            {
+                var playlistWithTracks = await PlaylistRepository.GetPlayListByIdWithTracks(playlistId, userId);
 
-            return playlistWithTracks;
+                return playlistWithTracks;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
 

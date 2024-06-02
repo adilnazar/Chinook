@@ -26,15 +26,24 @@ namespace Chinook.DataAccess
         /// <returns></returns>
         public async Task<List<ClientModels.Playlist>> GetUserPlayLists(string userId)
         {
-            var playlists = await DbContext.UserPlaylists.Include(x => x.Playlist)
-            .Where(x => x.UserId == userId && x.Playlist.Name != Constant.Favourite)
-            .Select(x => new ClientModels.Playlist
+            try
             {
-                PlaylistId = x.Playlist.PlaylistId,
-                Name = x.Playlist.Name
-            }).OrderBy(x=>x.Name).ToListAsync();
+                var playlists = await DbContext.UserPlaylists
+                                               .Include(x => x.Playlist)
+                                               .Where(x => x.UserId == userId && x.Playlist.Name != Constant.Favourite)
+                                               .Select(x => new ClientModels.Playlist
+                                               {
+                                                   PlaylistId = x.Playlist.PlaylistId,
+                                                   Name = x.Playlist.Name
+                                               }).OrderBy(x => x.Name).ToListAsync();
 
-            return playlists;
+                return playlists;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -47,24 +56,33 @@ namespace Chinook.DataAccess
         /// <returns></returns>
         public async Task<ClientModels.Playlist> GetPlayListByIdWithTracks(long playlistId, string userId)
         {
-            var playList = await DbContext.Playlists
-            .Include(a => a.Tracks).ThenInclude(a => a.Album).ThenInclude(a => a.Artist)
-            .Where(p => p.PlaylistId == playlistId)
-            .Select(p => new ClientModels.Playlist()
+            try
             {
-                Name = p.Name,
-                Tracks = p.Tracks.Select(t => new ClientModels.PlaylistTrack()
-                {
-                    AlbumTitle = t.Album.Title,
-                    ArtistName = t.Album.Artist.Name,
-                    TrackId = t.TrackId,
-                    TrackName = t.Name,
-                    IsFavorite = t.Playlists.Where(p => p.UserPlaylists.Any(up => up.UserId == userId && up.Playlist.Name == Constant.Favourite)).Any()
-                }).OrderBy(x => x.ArtistName).ThenBy(x => x.AlbumTitle).ThenBy(x=>x.TrackName).ToList()
-            })
-            .FirstOrDefaultAsync();
+                var playList = await DbContext.Playlists
+                                              .Include(a => a.Tracks).ThenInclude(a => a.Album).ThenInclude(a => a.Artist)
+                                              .Where(p => p.PlaylistId == playlistId)
+                                              .Select(p => new ClientModels.Playlist()
+                                              {
+                                                  Name = p.Name,
+                                                  Tracks = p.Tracks.Select(t => new ClientModels.PlaylistTrack()
+                                                  {
+                                                      AlbumTitle = t.Album.Title,
+                                                      ArtistName = t.Album.Artist.Name,
+                                                      TrackId = t.TrackId,
+                                                      TrackName = t.Name,
+                                                      IsFavorite = t.Playlists.Where(p => p.UserPlaylists.Any(up => up.UserId == userId 
+                                                                                     && up.Playlist.Name == Constant.Favourite)).Any()
+                                                  }).OrderBy(x => x.ArtistName).ThenBy(x => x.AlbumTitle).ThenBy(x => x.TrackName).ToList()
+                                              })
+                                              .FirstOrDefaultAsync();
 
-            return playList;
+                return playList;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 }

@@ -97,7 +97,7 @@ else
 
     [Inject] IUserService UserService { get; set; }
     [Inject] ITrackService DataService { get; set; }
-    [Inject] IPlaylistService PlaylistService { get; set; }
+    [Inject] IClientPlaylistService PlaylistService { get; set; }
     [Inject] IClientArtistService ArtistService { get; set; }
     [Inject] IAppState AppState { get; set; }
    
@@ -113,8 +113,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await InvokeAsync(StateHasChanged);
-
         Artist = await ArtistService.GetArtistByIdAsync(ArtistId);
         Tracks = await DataService.GetTracksByArtist(ArtistId);
     }
@@ -161,7 +159,7 @@ else
     {
         CloseInfoMessage();
         SelectedTrack = Tracks.FirstOrDefault(t => t.TrackId == trackId);
-        ExistingUserPlaylists = await PlaylistService.GetUserPlayLists();
+        ExistingUserPlaylists = await PlaylistService.GetPlaylistsAsync();
         PlaylistDialog.Open();
     }
 

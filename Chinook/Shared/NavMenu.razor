@@ -36,7 +36,7 @@
     private bool collapseNavMenu = true;
     private List<Playlist> Playlists;
 
-    [Inject] IPlaylistService PlaylistService { get; set; }
+    [Inject] IClientPlaylistService PlaylistService { get; set; }
     [Inject] IAppState AppState { get; set; }
 
 
@@ -45,14 +45,14 @@
     protected override async Task OnInitializedAsync()
     {
         AppState.OnChange += OnAppStateChange;
-        Playlists = await PlaylistService.GetUserPlayLists();
+        Playlists = await PlaylistService.GetPlaylistsAsync();
     }
 
     private void OnAppStateChange()
     {
         InvokeAsync(async () =>
         {
-            Playlists = await PlaylistService.GetUserPlayLists();
+            Playlists = await PlaylistService.GetPlaylistsAsync();
             StateHasChanged();
         });
     }
