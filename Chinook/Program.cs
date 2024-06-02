@@ -11,6 +11,7 @@ using Chinook.Infrastructure.Contracts.Services;
 using Chinook.Services;
 using Chinook.ClientServices.Interfaces;
 using Chinook.ClientServices;
+using Chinook.ClientServices.API;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,6 +44,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IAppState,AppState>();
 
+builder.Services.AddScoped<IApiServices, ApiServices>();
 builder.Services.AddScoped<IClientArtistService, ClientArtistService>();
 builder.Services.AddHttpClient<ClientArtistService>(client =>
 {

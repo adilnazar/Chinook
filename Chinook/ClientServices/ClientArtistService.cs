@@ -1,4 +1,5 @@
 ﻿using Chinook.ClientModels;
+using Chinook.ClientServices.API;
 using Chinook.ClientServices.Interfaces;
 using Chinook.Models;
 using Microsoft.AspNetCore.Components;
@@ -8,64 +9,31 @@ namespace Chinook.ClientServices
 {
     public class ClientArtistService : IClientArtistService
     {
-        private readonly HttpClient HttpClient;
-        private readonly ILogger<ClientArtistService> Logger;
+        private readonly IApiServices ApiServices;
 
-        public ClientArtistService(HttpClient httpClient, NavigationManager navigationManager, ILogger<ClientArtistService> logger)
+        public ClientArtistService(IApiServices apiServices)
         {
-            HttpClient = httpClient;
-            HttpClient.BaseAddress = new Uri(navigationManager.BaseUri);
-            Logger = logger;
+            ApiServices = apiServices;
         }
 
         /// <summary>
-        /// Get Artists list From Server 
+        /// Get Artists list From Server
         /// </summary>
-        /// <param name="search"></param>
-        /// <returns></returns>
+        /// <param name="search">The search term</param>
+        /// <returns>A list of artists</returns>
         public async Task<List<ArtistModel>> GetArtistsAsync(string search)
         {
-            try
-            {
-                var response = await HttpClient.GetAsync($"api/artist?search={search}");
-                response.EnsureSuccessStatusCode();
-
-                var responseContent = await response.Content.ReadAsStringAsync();
-                Logger.LogInformation("Response Content: {0}", responseContent);
-
-                var artists = JsonSerializer.Deserialize<List<ArtistModel>>(responseContent);
-                return artists ?? new List<ArtistModel>();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "Request error.");
-                return new List<ArtistModel>();
-            }
+            return await ApiServices.GetDataAsync<List<ArtistModel>>($"api/artist?search={search}");
         }
 
         /// <summary>
         /// Get Artist detail by Id from Server
         /// </summary>
-        /// <param name="artistId"></param>
-        /// <returns></returns>
+        /// <param name="artistId">The artist Id</param>
+        /// <returns>An artist model</returns>
         public async Task<ArtistModel> GetArtistByIdAsync(long artistId)
         {
-            try
-            {
-                var response = await HttpClient.GetAsync($"api/artist/{artistId}");
-                response.EnsureSuccessStatusCode();
-
-                var responseContent = await response.Content.ReadAsStringAsync();
-                Logger.LogInformation("Response Content: {0}", responseContent);
-
-                var artists = JsonSerializer.Deserialize<ArtistModel>(responseContent);
-                return artists ?? new ArtistModel();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex, "Request error.");
-                return new ArtistModel();
-            }
+            return await ApiServices.GetDataAsync<ArtistModel>($"api/artist/{artistId}");
         }
     }
 }
