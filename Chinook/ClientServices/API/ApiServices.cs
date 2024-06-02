@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using System.Text;
 using System.Text.Json;
 
 namespace Chinook.ClientServices.API
@@ -41,6 +42,31 @@ namespace Chinook.ClientServices.API
             {
                 Logger.LogError(ex, "Request error.");
                 return Activator.CreateInstance<T>();
+            }
+        }
+
+        public async Task<TResponse> PostDataAsync<TRequest, TResponse>(string url, TRequest requestData)
+        {
+            try
+            {
+                var requestContent = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
+                var response = await HttpClient.PostAsync(url, requestContent);
+                response.EnsureSuccessStatusCode();
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                Logger.LogInformation("Response Content: {0}", responseContent);
+
+                var responseData = JsonSerializer.Deserialize<TResponse>(responseContent, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+                return responseData;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Request error.");
+                return default;
             }
         }
     }

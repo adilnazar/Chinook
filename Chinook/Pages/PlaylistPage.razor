@@ -63,7 +63,7 @@ else
 
 @code {
     [Parameter] public long PlaylistId { get; set; }
-    [Inject] ITrackService DataService { get; set; }
+    [Inject] IClientTrackService TrackService { get; set; }
     [Inject] IClientPlaylistService PlaylistService { get; set; }
 
 
@@ -86,7 +86,7 @@ else
     {
         var track = Playlist.Tracks.FirstOrDefault(t => t.TrackId == trackId);
 
-        var result = await DataService.FavoriteTrack(trackId);
+        var result = await TrackService.FavoriteTrack(trackId);
 
         if (result)
         {
@@ -104,7 +104,7 @@ else
     {
         var track = Playlist.Tracks.FirstOrDefault(t => t.TrackId == trackId);
 
-        var result = await DataService.UnFavoriteTrack(trackId);
+        var result = await TrackService.UnFavoriteTrack(trackId);
 
         if (result)
         {
@@ -121,7 +121,7 @@ else
     {
         CloseInfoMessage();
         var track = Playlist.Tracks.FirstOrDefault(t => t.TrackId == trackId);
-        var result = await DataService.RemoveTrackFromPlaylist(trackId, PlaylistId);
+        var result = await TrackService.RemoveTrackFromPlaylist(trackId, PlaylistId);
         if (result)
         {
             InfoMessage = $"Track {track.ArtistName} - {track.AlbumTitle} - {track.TrackName} removed from playlist {Playlist.Name}";
