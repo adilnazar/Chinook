@@ -18,6 +18,11 @@ namespace Chinook.ClientServices
             Logger = logger;
         }
 
+        /// <summary>
+        /// Get Artists list From Server 
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public async Task<List<ArtistModel>> GetArtistsAsync(string search)
         {
             try
@@ -38,6 +43,11 @@ namespace Chinook.ClientServices
             }
         }
 
+        /// <summary>
+        /// Get Artist detail by Id from Server
+        /// </summary>
+        /// <param name="artistId"></param>
+        /// <returns></returns>
         public async Task<ArtistModel> GetArtistByIdAsync(long artistId)
         {
             try
