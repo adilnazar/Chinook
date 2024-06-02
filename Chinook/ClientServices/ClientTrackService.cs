@@ -3,7 +3,6 @@ using Chinook.ClientModels.Request;
 using Chinook.ClientServices.API;
 using Chinook.ClientServices.Interfaces;
 using Chinook.DataAccess;
-using Chinook.Infrastructure.Contracts.Services;
 using Chinook.Models;
 using Chinook.Services;
 

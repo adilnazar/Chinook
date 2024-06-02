@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
+using Chinook.ClientServices.Interfaces;
 
-using Chinook.Infrastructure.Contracts.Services;
 
-
-namespace Chinook.Services
+namespace Chinook.ClientServices
 {
     public class UserService : IUserService
     {
