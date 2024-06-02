@@ -24,7 +24,15 @@ namespace Chinook.Services
         /// <returns></returns>
         public async Task<List<ArtistModel>> GetArtistsAsync(string artistSearchString)
         {
-            return await ArtistRepository.GetArtistsAsync(artistSearchString);
+            try
+            {
+                return await ArtistRepository.GetArtistsAsync(artistSearchString);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -32,6 +40,17 @@ namespace Chinook.Services
         /// </summary>
         /// <param name="ArtistId"></param>
         /// <returns></returns>
-        public async Task<ArtistModel> GetArtistByIdAsync(long artistId) => await ArtistRepository.GetArtistByIdAsync(artistId);
+        public async Task<ArtistModel> GetArtistByIdAsync(long artistId)
+        {
+            try
+            {
+                return await ArtistRepository.GetArtistByIdAsync(artistId);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

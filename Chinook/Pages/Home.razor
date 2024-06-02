@@ -2,6 +2,7 @@
 @attribute [Authorize]
 
 @using Chinook.ClientModels
+@using Chinook.ClientServices.Interfaces
 @using Chinook.Infrastructure.Contracts.Services
 
 <PageTitle>Index</PageTitle>
@@ -43,7 +44,7 @@ else
 @code {
     private List<ArtistModel> Artists;
     private string ArtistSearchString = string.Empty;
-    [Inject] IArtistService ArtistService { get; set; }
+    [Inject] IClientArtistService ArtistService { get; set; }
 
     protected override async Task OnInitializedAsync() {
         await InvokeAsync(StateHasChanged);

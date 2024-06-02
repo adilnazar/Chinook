@@ -26,15 +26,23 @@ namespace Chinook.DataAccess
         //Get All Artist Avaiable for search string provided if not retrive all
         public async Task<List<ArtistModel>> GetArtistsAsync(string artistSearchString)
         {
-            IQueryable<Artist> query = DbContext.Artists.Include(x => x.Albums).OrderBy(x => x.Name);
-            if (!string.IsNullOrEmpty(artistSearchString))
+            try
             {
-                query = query.Where(x => x.Name != null && x.Name.ToLower().Contains(artistSearchString.ToLower()));
+                IQueryable<Artist> query = DbContext.Artists.Include(x => x.Albums).OrderBy(x => x.Name);
+                if (!string.IsNullOrEmpty(artistSearchString))
+                {
+                    query = query.Where(x => x.Name != null && x.Name.ToLower().Contains(artistSearchString.ToLower()));
+                }
+
+                var artists = await query.ToListAsync();
+
+                return Mapper.Map<List<ArtistModel>>(artists);
             }
+            catch (Exception ex)
+            {
 
-            var artists = await query.ToListAsync();
-
-            return Mapper.Map<List<ArtistModel>>(artists);
+                throw;
+            }
 
         }
 
@@ -45,8 +53,16 @@ namespace Chinook.DataAccess
         /// <returns></returns>
         public async Task<ArtistModel> GetArtistByIdAsync(long ArtistId)
         {
-            var artist = await DbContext.Artists.SingleOrDefaultAsync(a => a.ArtistId == ArtistId);
-            return Mapper.Map<ArtistModel>(artist);
+            try
+            {
+                var artist = await DbContext.Artists.SingleOrDefaultAsync(a => a.ArtistId == ArtistId);
+                return Mapper.Map<ArtistModel>(artist);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
     }

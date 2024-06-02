@@ -9,6 +9,8 @@ using Chinook.Infrastructure.Contracts.Repositories;
 using Chinook.DataAccess;
 using Chinook.Infrastructure.Contracts.Services;
 using Chinook.Services;
+using Chinook.ClientServices.Interfaces;
+using Chinook.ClientServices;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,6 +41,13 @@ builder.Services.AddScoped<IPlaylistService, PlaylistService>();
 builder.Services.AddScoped<ITrackService, TrackService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
+builder.Services.AddScoped<IClientArtistService, ClientArtistService>();
+builder.Services.AddHttpClient<ClientArtistService>(client =>
+{
+    
+});
+
+builder.Services.AddLogging();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
