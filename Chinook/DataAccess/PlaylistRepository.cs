@@ -30,12 +30,12 @@ namespace Chinook.DataAccess
             {
                 var playlists = await DbContext.UserPlaylists
                                                .Include(x => x.Playlist)
-                                               .Where(x => x.UserId == userId && x.Playlist.Name != Constant.Favourite)
+                                               .Where(x => x.UserId == userId)
                                                .Select(x => new ClientModels.Playlist
                                                {
                                                    PlaylistId = x.Playlist.PlaylistId,
                                                    Name = x.Playlist.Name
-                                               }).OrderBy(x => x.Name).ToListAsync();
+                                               }).OrderBy(x => x.Name != Constant.Favourite).ThenBy(x=>x.Name).ToListAsync();
 
                 return playlists;
             }
