@@ -124,6 +124,7 @@ else
             InfoMessage = $"Track {track.ArtistName} - {track.AlbumTitle} - {track.TrackName} added to playlist My favorite tracks.";
             Tracks = await TrackService.GetTracksByArtist(ArtistId);
             StateHasChanged();
+            AppState.NotifyStateChanged();
         }
         else
         {

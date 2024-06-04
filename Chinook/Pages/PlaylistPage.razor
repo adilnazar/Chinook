@@ -3,6 +3,7 @@
 @inject NavigationManager Navigation
 
 @using Chinook.ClientServices.Interfaces
+@using Chinook.Common.Constants
 @using Chinook.Infrastructure.Contracts.Services
 
 
@@ -40,7 +41,7 @@ else
                     <td>@track.ArtistName - @track.AlbumTitle - @track.TrackName</td>
                     <td>
                         <div class="d-flex">
-                            @if (Playlist.Name != "My favorite tracks")
+                            @if (Playlist.Name != Constant.Favourite)
                             {
                                 @if (track.IsFavorite)
                                 {
